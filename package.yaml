@@ -1,0 +1,32 @@
+name:        aeson-warning-parser
+version:     0.1.0
+synopsis:    Library providing JSON parser that warns about unexpected fields in
+             objects.
+description: Please see the README on GitHub at <https://github.com/commercialhaskell/aeson-warning-parser#readme>
+category:    JSON
+author:      Michael Snoyman
+maintainer:  Mike Pilgrem <public@pilgrem.com>
+copyright:   2018-2023 FP Complete
+license:     BSD3
+github:      commercialhaskell/aeson-warning-parser
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+
+dependencies:
+- base >= 4.12 && < 5
+- aeson
+- containers
+- generic-deriving
+- rio
+- rio-prettyprint
+- text
+- transformers
+- unordered-containers
+
+ghc-options:
+- -Wall
+
+library:
+  source-dirs: src
