@@ -94,39 +94,39 @@ wp ..!= d =
     a <- fmap snd p
     fmap (, a) (fmap fst p .!= d)
 
-presentCount :: Object -> [Text] -> Int
-presentCount o = length . filter (\x -> HashMap.member (textToKey x) o)
+present :: Object -> [Text] -> [Text]
+present o = filter (\x -> HashMap.member (textToKey x) o)
 
 -- | Synonym version of @..:@.
 (...:) :: FromJSON a => Object -> [Text] -> WarningParser a
 _ ...: [] = fail "failed to find an empty key"
 o ...: ss@(key:_) = apply
  where
-  pc = presentCount o ss
-  apply | pc == 0   = fail $
-                        "failed to parse field " ++
-                        show key ++ ": " ++
-                        "keys " ++ show ss ++ " not present"
-        | pc >  1   = fail $
-                        "failed to parse field " ++
-                        show key ++ ": " ++
-                        "two or more synonym keys " ++
-                        show ss ++ " present"
-        | otherwise = asum $ map (o..:) ss
+  apply = case present o ss of
+    [] -> fail $
+      "failed to parse field " ++
+      show key ++ ": " ++
+      "keys " ++ show ss ++ " not present"
+    [s] -> o ..: s
+    _ -> fail $
+      "failed to parse field " ++
+      show key ++ ": " ++
+      "two or more synonym keys " ++
+      show ss ++ " present"
 
 -- | Synonym version of @..:?@.
 (...:?) :: FromJSON a => Object -> [Text] -> WarningParser (Maybe a)
 _ ...:? [] = fail "failed to find an empty key"
 o ...:? ss@(key:_) = apply
  where
-  pc = presentCount o ss
-  apply | pc == 0   = pure Nothing
-        | pc >  1   = fail $
-                        "failed to parse field " ++
-                        show key ++ ": " ++
-                        "two or more synonym keys " ++
-                        show ss ++ " present"
-        | otherwise = asum $ map (o..:) ss
+  apply = case present o ss of
+    [] -> pure Nothing
+    [s] -> o ..: s
+    _ -> fail $
+      "failed to parse field " ++
+      show key ++ ": " ++
+      "two or more synonym keys " ++
+      show ss ++ " present"
 
 -- | Tell the warning parser about an expected field, so it doesn't warn about
 -- it.

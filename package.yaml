@@ -1,5 +1,5 @@
 name:        aeson-warning-parser
-version:     0.1.0
+version:     0.1.1
 synopsis:    Library providing JSON parser that warns about unexpected fields in
              objects.
 description: Please see the README on GitHub at <https://github.com/commercialhaskell/aeson-warning-parser#readme>
